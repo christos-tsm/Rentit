@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Car, Folder, Layers, LayoutGrid, Tag, Type } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -15,12 +15,39 @@ import {
 import type { NavItem } from '@/types';
 import AppLogo from './app-logo';
 import { dashboard } from '@/routes';
+import { index as vehiclesIndex } from '@/routes/vehicles';
+import { index as makesIndex } from '@/routes/admin/makes';
+import { index as modelsIndex } from '@/routes/admin/models';
+import { index as categoriesIndex } from '@/routes/admin/categories';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Οχήματα',
+        href: vehiclesIndex(),
+        icon: Car,
+    },
+];
+
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Κατηγορίες',
+        href: categoriesIndex(),
+        icon: Layers,
+    },
+    {
+        title: 'Μάρκες',
+        href: makesIndex(),
+        icon: Tag,
+    },
+    {
+        title: 'Μοντέλα',
+        href: modelsIndex(),
+        icon: Type,
     },
 ];
 
@@ -54,6 +81,7 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} />
+                <NavMain items={adminNavItems} label="Διαχείριση" />
             </SidebarContent>
 
             <SidebarFooter>
