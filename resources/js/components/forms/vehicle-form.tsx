@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { VehicleCategory, VehicleMake, VehicleModel } from "@/types/admin";
-import { store } from '@/actions/App/Http/Controllers/VehicleController';
-import { Vehicle, STATUS } from "@/types/vehicles";
 import { useForm } from "@inertiajs/react";
+import React, { useEffect, useRef, useState } from 'react';
+import { store } from '@/actions/App/Http/Controllers/VehicleController';
+import InputError from '@/components/input-error';
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
@@ -10,13 +13,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import InputError from '@/components/input-error';
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { FUEL_TYPES, TRANSMISSIONS, VEHICLE_STATUSES } from "@/lib/vehicle-constants";
 import { update } from "@/routes/vehicles";
+import type { VehicleCategory, VehicleMake, VehicleModel } from "@/types/admin";
+import type { Vehicle, STATUS } from "@/types/vehicles";
 
 const VehicleForm = ({ vehicle, makes, categories, isEdit = false }: { vehicle: Vehicle | null, makes: VehicleMake[], categories: VehicleCategory[], isEdit?: boolean }) => {
     const [selectedMakeId, setSelectedMakeId] = useState(String(vehicle?.vehicle_model?.vehicle_make_id) || '');
@@ -44,41 +44,44 @@ const VehicleForm = ({ vehicle, makes, categories, isEdit = false }: { vehicle: 
     });
 
     const formRef = useRef(form);
-    formRef.current = form;
+    useEffect(() => {
+        formRef.current = form;
+    });
+
+    async function fetchModels(makeId: string, signal?: AbortSignal): Promise<void> {
+        setLoadingModels(true);
+        try {
+            const res = await fetch(`/api/vehicle-models?make_id=${makeId}`, { signal });
+            const data: VehicleModel[] = await res.json();
+            setAvailableModels(data);
+            const currentModelId = String(formRef.current.data.vehicle_model_id);
+            const modelExists = data.some((m) => String(m.id) === currentModelId);
+            if (!modelExists) {
+                formRef.current.setData('vehicle_model_id', '');
+            }
+        } catch (err) {
+            if (err instanceof Error && err.name !== 'AbortError') throw err;
+        } finally {
+            setLoadingModels(false);
+        }
+    }
 
     function handleMakeChange(makeId: string) {
         setSelectedMakeId(makeId);
         if (!makeId) {
             setAvailableModels([]);
             form.setData('vehicle_model_id', '');
+            return;
         }
+        fetchModels(makeId);
     }
 
     useEffect(() => {
-        if (!selectedMakeId) {
-            return;
-        }
-
+        if (!selectedMakeId) return;
         const controller = new AbortController();
-        setLoadingModels(true);
-
-        fetch(`/api/vehicle-models?make_id=${selectedMakeId}`, { signal: controller.signal })
-            .then((res) => res.json())
-            .then((data: VehicleModel[]) => {
-                setAvailableModels(data);
-                const currentModelId = String(formRef.current.data.vehicle_model_id);
-                const modelExists = data.some((m) => String(m.id) === currentModelId);
-                if (!modelExists) {
-                    formRef.current.setData('vehicle_model_id', '');
-                }
-            })
-            .catch((err) => {
-                if (err.name !== 'AbortError') throw err;
-            })
-            .finally(() => setLoadingModels(false));
-
+        fetchModels(selectedMakeId, controller.signal);
         return () => controller.abort();
-    }, [selectedMakeId]);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();

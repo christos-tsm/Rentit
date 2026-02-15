@@ -1,5 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { Eye, Trash2 } from "lucide-react";
 import { useRef, useCallback } from 'react';
+import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,13 +13,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+import { VEHICLE_STATUSES } from "@/lib/vehicle-constants";
 import { dashboard } from '@/routes';
 import { index as vehiclesIndex, create as vehiclesCreate, show as vehiclesShow } from '@/routes/vehicles';
 import type { BreadcrumbItem } from '@/types';
 import type { Vehicle, VehicleIndexProps } from '@/types/vehicles';
-import { Eye, Trash2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { VEHICLE_STATUSES } from "@/lib/vehicle-constants";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

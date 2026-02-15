@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
 import { useForm } from "@inertiajs/react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 import { store } from "@/actions/App/Http/Controllers/VehicleModelController";
-import { VehicleMake } from "@/types/admin";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import InputError from "@/components/input-error";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import type { VehicleMake } from "@/types/admin";
 
 export function CreateModelDialog({ makes = [] }: { makes: VehicleMake[] }) {
     const [open, setOpen] = useState(false);

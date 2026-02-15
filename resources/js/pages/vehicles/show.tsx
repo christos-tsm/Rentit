@@ -1,12 +1,12 @@
+import { Head } from "@inertiajs/react";
+import VehicleForm from "@/components/forms/vehicle-form";
+import Heading from "@/components/heading";
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as vehiclesIndex } from '@/routes/vehicles';
 import type { BreadcrumbItem } from '@/types';
+import type { VehicleCategory, VehicleMake } from "@/types/admin";
 import type { Vehicle } from '@/types/vehicles';
-import Heading from "@/components/heading";
-import VehicleForm from "@/components/forms/vehicle-form";
-import { VehicleCategory, VehicleMake } from "@/types/admin";
-import { Head } from "@inertiajs/react";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

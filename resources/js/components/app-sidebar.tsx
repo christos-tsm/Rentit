@@ -12,13 +12,13 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import type { NavItem } from '@/types';
-import AppLogo from './app-logo';
 import { dashboard } from '@/routes';
-import { index as vehiclesIndex } from '@/routes/vehicles';
+import { index as categoriesIndex } from '@/routes/admin/categories';
 import { index as makesIndex } from '@/routes/admin/makes';
 import { index as modelsIndex } from '@/routes/admin/models';
-import { index as categoriesIndex } from '@/routes/admin/categories';
+import { index as vehiclesIndex } from '@/routes/vehicles';
+import type { NavItem } from '@/types';
+import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
