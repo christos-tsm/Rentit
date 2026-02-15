@@ -1,11 +1,11 @@
+import { Head } from "@inertiajs/react";
+import VehicleForm from "@/components/forms/vehicle-form";
 import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as vehiclesIndex } from '@/routes/vehicles';
 import type { BreadcrumbItem } from '@/types';
 import type { VehicleCategory, VehicleMake } from '@/types/admin';
-import VehicleForm from "@/components/forms/vehicle-form";
-import { Head } from "@inertiajs/react";
 
 type Props = {
     makes: VehicleMake[];

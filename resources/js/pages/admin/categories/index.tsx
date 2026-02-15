@@ -1,8 +1,10 @@
-import { useState } from 'react';
 import { useForm, router, Head } from '@inertiajs/react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { store, update, destroy } from '@/actions/App/Http/Controllers/VehicleCategoryController';
+import Heading from '@/components/heading';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Dialog,
     DialogContent,
@@ -12,15 +14,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import Heading from '@/components/heading';
-import InputError from '@/components/input-error';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as categoriesIndex } from '@/routes/admin/categories';
-import { store, update, destroy } from '@/actions/App/Http/Controllers/VehicleCategoryController';
 import type { BreadcrumbItem } from '@/types';
 import type { VehicleCategory } from '@/types/admin';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },

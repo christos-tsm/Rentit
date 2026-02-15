@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { update } from '@/actions/App/Http/Controllers/VehicleModelController';
-import { VehicleMake, VehicleModel } from "@/types/admin";
 import { useForm } from "@inertiajs/react";
 import { Pencil } from "lucide-react";
+import { useState } from "react";
+import { update } from '@/actions/App/Http/Controllers/VehicleModelController';
+import InputError from "@/components/input-error";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -12,11 +13,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import InputError from "@/components/input-error";
-import { Input } from "@/components/ui/input";
+import type { VehicleMake, VehicleModel } from "@/types/admin";
 
 
 export function EditModelDialog({ model, makes }: { model: VehicleModel; makes: VehicleMake[] }) {

@@ -1,6 +1,10 @@
 
-import { Trash2 } from 'lucide-react';
 import { Head, router } from '@inertiajs/react';
+import { Trash2 } from 'lucide-react';
+import { destroy } from '@/actions/App/Http/Controllers/VehicleModelController';
+import Heading from '@/components/heading';
+import { CreateModelDialog } from "@/components/models/create-model-dialog";
+import { EditModelDialog } from "@/components/models/edit-model-dialog";
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -10,15 +14,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as modelsIndex } from '@/routes/admin/models';
-import { destroy } from '@/actions/App/Http/Controllers/VehicleModelController';
 import type { BreadcrumbItem } from '@/types';
 import type { VehicleMake, VehicleModel } from '@/types/admin';
-import { CreateModelDialog } from "@/components/models/create-model-dialog";
-import { EditModelDialog } from "@/components/models/edit-model-dialog";
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },

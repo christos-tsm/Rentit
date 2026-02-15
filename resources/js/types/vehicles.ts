@@ -1,5 +1,5 @@
-import { PaginatedResponse } from '.';
 import type { VehicleCategory, VehicleMake, VehicleModel } from './admin';
+import type { PaginatedResponse } from '.';
 
 type FUEL_TYPE = 'petrol' | 'diesel' | 'electric' | 'hybrid';
 export type STATUS = 'available' | 'rented' | 'maintenance' | 'out_of_service';
