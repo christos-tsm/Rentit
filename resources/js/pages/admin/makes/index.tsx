@@ -16,10 +16,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as makesIndex } from '@/routes/admin/makes';
-import type { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem, PaginatedResponse } from '@/types';
 import type { VehicleMake } from '@/types/admin';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -121,7 +122,7 @@ function EditMakeDialog({ make }: { make: VehicleMake }) {
     );
 }
 
-export default function MakesPage({ makes }: { makes: VehicleMake[] }) {
+export default function MakesPage({ makes }: { makes: PaginatedResponse<VehicleMake> }) {
     function handleDelete(make: VehicleMake) {
         if (!confirm(`Σίγουρα θέλετε να διαγράψετε την μάρκα "${make.name}";`)) return;
         router.delete(destroy(make.id).url);
@@ -146,14 +147,14 @@ export default function MakesPage({ makes }: { makes: VehicleMake[] }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {makes.length === 0 && (
+                            {makes.data.length === 0 && (
                                 <tr>
                                     <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground">
                                         Δεν υπάρχουν μάρκες. Προσθέστε μία για να ξεκινήσετε.
                                     </td>
                                 </tr>
                             )}
-                            {makes.map((make) => (
+                            {makes.data.map((make) => (
                                 <tr key={make.id} className="border-b last:border-b-0">
                                     <td className="px-4 py-3 font-medium">{make.name}</td>
                                     <td className="px-4 py-3 text-muted-foreground">
@@ -175,6 +176,7 @@ export default function MakesPage({ makes }: { makes: VehicleMake[] }) {
                             ))}
                         </tbody>
                     </table>
+                    <TablePagination pagination={makes} />
                 </div>
             </div>
         </AppLayout>

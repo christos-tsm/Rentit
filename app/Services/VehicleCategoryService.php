@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\VehicleCategory;
 use App\Repositories\VehicleCategoryRepository;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class VehicleCategoryService
 {
@@ -12,9 +12,9 @@ class VehicleCategoryService
         private VehicleCategoryRepository $vehicleCategoryRepository,
     ) {}
 
-    public function getAll(): Collection
+    public function getAll(int $perPage = 15): LengthAwarePaginator
     {
-        return $this->vehicleCategoryRepository->getAll();
+        return $this->vehicleCategoryRepository->getAll($perPage);
     }
 
     /**

@@ -3,30 +3,26 @@
 namespace App\Repositories;
 
 use App\Models\VehicleModel;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class VehicleModelRepository
-{
-    public function getAll(?int $vehicleMakeId = null): Collection
-    {
+class VehicleModelRepository {
+    public function getAll(?int $vehicleMakeId = null, int $perPage = 15): LengthAwarePaginator {
         return VehicleModel::query()
             ->with('make')
             ->withCount('vehicles')
-            ->when($vehicleMakeId, fn ($query) => $query->where('vehicle_make_id', $vehicleMakeId))
+            ->when($vehicleMakeId, fn($query) => $query->where('vehicle_make_id', $vehicleMakeId))
             ->orderBy('name')
-            ->get();
+            ->paginate($perPage);
     }
 
-    public function create(int $vehicleMakeId, string $name): VehicleModel
-    {
+    public function create(int $vehicleMakeId, string $name): VehicleModel {
         return VehicleModel::create([
             'vehicle_make_id' => $vehicleMakeId,
             'name' => $name,
         ]);
     }
 
-    public function update(VehicleModel $vehicleModel, int $vehicleMakeId, string $name): VehicleModel
-    {
+    public function update(VehicleModel $vehicleModel, int $vehicleMakeId, string $name): VehicleModel {
         $vehicleModel->update([
             'vehicle_make_id' => $vehicleMakeId,
             'name' => $name,
@@ -35,8 +31,7 @@ class VehicleModelRepository
         return $vehicleModel->refresh();
     }
 
-    public function delete(VehicleModel $vehicleModel): void
-    {
+    public function delete(VehicleModel $vehicleModel): void {
         $vehicleModel->delete();
     }
 }

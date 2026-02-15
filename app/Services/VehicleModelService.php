@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\VehicleModel;
 use App\Repositories\VehicleModelRepository;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class VehicleModelService
 {
@@ -12,9 +12,9 @@ class VehicleModelService
         private VehicleModelRepository $vehicleModelRepository,
     ) {}
 
-    public function getAll(?int $vehicleMakeId = null): Collection
+    public function getAll(?int $vehicleMakeId = null, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->vehicleModelRepository->getAll($vehicleMakeId);
+        return $this->vehicleModelRepository->getAll($vehicleMakeId, $perPage);
     }
 
     public function create(int $vehicleMakeId, string $name): VehicleModel

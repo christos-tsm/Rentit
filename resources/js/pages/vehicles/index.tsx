@@ -12,6 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { VEHICLE_STATUSES } from "@/lib/vehicle-constants";
 import { dashboard } from '@/routes';
@@ -184,6 +185,7 @@ export default function VehiclesPage({ vehicles, makes, categories, filters }: V
                             ))}
                         </tbody>
                     </table>
+                    <TablePagination pagination={vehicles} />
                 </div>
             </div>
         </AppLayout>

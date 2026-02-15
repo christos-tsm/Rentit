@@ -25,8 +25,7 @@ class VehicleModelController extends Controller
 
         return Inertia::render('admin/models/index', [
             'models' => $this->vehicleModelService->getAll($makeId),
-            'makes' => $this->vehicleMakeService->getAll(),
-            // 'makes' => Inertia::lazy(fn() => $this->vehicleMakeService->getAll()),
+            'makes' => $this->vehicleMakeService->getForSelect(),
             'selectedMakeId' => $makeId,
         ]);
     }

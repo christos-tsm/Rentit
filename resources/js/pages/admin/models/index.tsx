@@ -14,10 +14,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as modelsIndex } from '@/routes/admin/models';
-import type { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem, PaginatedResponse } from '@/types';
 import type { VehicleMake, VehicleModel } from '@/types/admin';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -26,7 +27,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type Props = {
-    models: VehicleModel[];
+    models: PaginatedResponse<VehicleModel>;
     makes: VehicleMake[];
     selectedMakeId: number | null;
 };
@@ -84,14 +85,14 @@ export default function ModelsPage({ models, makes, selectedMakeId }: Props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {models.length === 0 && (
+                            {models.data.length === 0 && (
                                 <tr>
                                     <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
                                         Δεν υπάρχουν μοντέλα. Προσθέστε ένα για να ξεκινήσετε.
                                     </td>
                                 </tr>
                             )}
-                            {models.map((model) => (
+                            {models.data.map((model) => (
                                 <tr key={model.id} className="border-b last:border-b-0">
                                     <td className="px-4 py-3 text-muted-foreground">
                                         {model.make?.name}
@@ -116,6 +117,7 @@ export default function ModelsPage({ models, makes, selectedMakeId }: Props) {
                             ))}
                         </tbody>
                     </table>
+                    <TablePagination pagination={models} />
                 </div>
             </div>
         </AppLayout>

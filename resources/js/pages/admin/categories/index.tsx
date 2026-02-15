@@ -16,10 +16,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as categoriesIndex } from '@/routes/admin/categories';
-import type { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem, PaginatedResponse } from '@/types';
 import type { VehicleCategory } from '@/types/admin';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -135,7 +136,7 @@ function EditCategoryDialog({ category }: { category: VehicleCategory }) {
     );
 }
 
-export default function CategoriesPage({ categories }: { categories: VehicleCategory[] }) {
+export default function CategoriesPage({ categories }: { categories: PaginatedResponse<VehicleCategory> }) {
     function handleDelete(category: VehicleCategory) {
         if (!confirm(`Σίγουρα θέλετε να διαγράψετε την κατηγορία "${category.name}";`)) return;
         router.delete(destroy(category.id).url);
@@ -162,14 +163,14 @@ export default function CategoriesPage({ categories }: { categories: VehicleCate
                             </tr>
                         </thead>
                         <tbody>
-                            {categories.length === 0 && (
+                            {categories.data.length === 0 && (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
                                         Δεν υπάρχουν κατηγορίες. Προσθέστε μία για να ξεκινήσετε.
                                     </td>
                                 </tr>
                             )}
-                            {categories.map((category) => (
+                            {categories.data.map((category) => (
                                 <tr key={category.id} className="border-b last:border-b-0">
                                     <td className="px-4 py-3 font-medium">{category.name}</td>
                                     <td className="px-4 py-3 text-muted-foreground">{category.description || '—'}</td>
@@ -187,6 +188,7 @@ export default function CategoriesPage({ categories }: { categories: VehicleCate
                             ))}
                         </tbody>
                     </table>
+                    <TablePagination pagination={categories} />
                 </div>
             </div>
         </AppLayout>

@@ -16,7 +16,7 @@ test('authenticated users can view makes index', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('admin/makes/index')
-            ->has('makes', 3)
+            ->has('makes.data', 3)
         );
 });
 

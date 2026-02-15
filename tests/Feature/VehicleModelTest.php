@@ -17,7 +17,7 @@ test('authenticated users can view models index', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('admin/models/index')
-            ->has('models', 3)
+            ->has('models.data', 3)
             ->has('makes')
         );
 });
@@ -36,7 +36,7 @@ test('models can be filtered by make', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('admin/models/index')
-            ->has('models', 2)
+            ->has('models.data', 2)
         );
 });
 

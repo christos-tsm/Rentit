@@ -16,7 +16,7 @@ test('authenticated users can view categories index', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('admin/categories/index')
-            ->has('categories', 3)
+            ->has('categories.data', 3)
         );
 });
 
