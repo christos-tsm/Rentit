@@ -25,11 +25,33 @@ class VehicleService
         }
     }
 
+    public function getVehicle(VehicleRequestDTO $vehicleRequestDTO): ?Vehicle
+    {
+        try {
+            return $this->vehicleRepository->getVehicle($vehicleRequestDTO);
+        } catch (\Exception $e) {
+            Log::error('Error getting vehicle', ['error' => $e->getMessage()]);
+
+            return null;
+        }
+    }
+
     /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): Vehicle
     {
         return $this->vehicleRepository->create($data);
+    }
+
+    public function update(Vehicle $vehicle, array $data): ?Vehicle
+    {
+        try {
+            return $this->vehicleRepository->update($vehicle, $data);
+        } catch (\Exception $e) {
+            Log::error('Error updating vehicle', ['error' => $e->getMessage()]);
+
+            return null;
+        }
     }
 }

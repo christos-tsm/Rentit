@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\Requests\VehicleRequestDTO;
 use App\Http\Requests\VehicleIndexRequest;
 use App\Http\Requests\VehicleStoreRequest;
+use App\Http\Requests\VehicleUpdateRequest;
+use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use App\Services\VehicleMakeService;
 use App\Services\VehicleModelService;
@@ -27,7 +30,13 @@ class VehicleController extends Controller
         return Inertia::render('vehicles/index', [
             'vehicles' => $this->vehicleService->getVehicles($dto),
             'makes' => $this->vehicleMakeService->getAll(),
-            'selectedMakeId' => $dto->makeId,
+            'categories' => VehicleCategory::query()->orderBy('name')->get(),
+            'filters' => [
+                'search' => $dto->searchKey,
+                'make_id' => $dto->makeId,
+                'category_id' => $dto->categoryId,
+                'status' => $dto->status,
+            ],
         ]);
     }
 
@@ -43,6 +52,25 @@ class VehicleController extends Controller
     {
         $this->vehicleService->create($request->validated());
 
-        return redirect()->route('vehicles.index');
+        return redirect()->route('vehicles.index')->with('success', 'Το όχημα καταχωρήθηκε με επιτυχία.');
+    }
+
+    public function show(Vehicle $vehicle): Response
+    {
+        $dto = new VehicleRequestDTO(id: $vehicle->id);
+        $vehicle = $this->vehicleService->getVehicle($dto);
+
+        return Inertia::render('vehicles/show', [
+            'vehicle' => $vehicle,
+            'makes' => $this->vehicleMakeService->getAll(),
+            'categories' => VehicleCategory::query()->orderBy('name')->get(),
+        ]);
+    }
+
+    public function update(VehicleUpdateRequest $request, Vehicle $vehicle): RedirectResponse
+    {
+        $this->vehicleService->update($vehicle, $request->validated());
+
+        return redirect()->route('vehicles.index')->with('success', 'Το όχημα ενημερώθηκε με επιτυχία.');
     }
 }

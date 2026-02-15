@@ -21,6 +21,8 @@ test('authenticated users can view vehicles index', function () {
             ->component('vehicles/index')
             ->has('vehicles')
             ->has('makes')
+            ->has('categories')
+            ->has('filters')
         );
 });
 
@@ -70,6 +72,92 @@ test('vehicles index can filter by search key', function () {
 
     $this->actingAs($user)
         ->get(route('vehicles.index', ['search' => 'Toyota']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('vehicles/index')
+            ->has('vehicles.data', 1)
+        );
+});
+
+test('vehicles index can filter by category', function () {
+    $user = User::factory()->create();
+
+    $suv = VehicleCategory::factory()->create(['name' => 'SUV']);
+    $sedan = VehicleCategory::factory()->create(['name' => 'Sedan']);
+
+    Vehicle::factory()->create(['vehicle_category_id' => $suv->id]);
+    Vehicle::factory()->create(['vehicle_category_id' => $suv->id]);
+    Vehicle::factory()->create(['vehicle_category_id' => $sedan->id]);
+
+    $this->actingAs($user)
+        ->get(route('vehicles.index', ['category_id' => $suv->id]))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('vehicles/index')
+            ->has('vehicles.data', 2)
+        );
+});
+
+test('vehicles index can filter by status', function () {
+    $user = User::factory()->create();
+
+    Vehicle::factory()->create(['status' => 'available']);
+    Vehicle::factory()->create(['status' => 'available']);
+    Vehicle::factory()->create(['status' => 'rented']);
+    Vehicle::factory()->create(['status' => 'maintenance']);
+
+    $this->actingAs($user)
+        ->get(route('vehicles.index', ['status' => 'available']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('vehicles/index')
+            ->has('vehicles.data', 2)
+        );
+});
+
+test('vehicles index can search by VIN', function () {
+    $user = User::factory()->create();
+
+    Vehicle::factory()->create(['vin' => 'WVWZZZ3CZWE123456']);
+    Vehicle::factory()->create(['vin' => 'JTDKN3DU5A0000001']);
+    Vehicle::factory()->create(['vin' => null]);
+
+    $this->actingAs($user)
+        ->get(route('vehicles.index', ['search' => 'WVWZZZ']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('vehicles/index')
+            ->has('vehicles.data', 1)
+        );
+});
+
+test('vehicles index can search by plate number', function () {
+    $user = User::factory()->create();
+
+    Vehicle::factory()->create(['plate_number' => 'ΑΒΓ-1234']);
+    Vehicle::factory()->create(['plate_number' => 'ΔΕΖ-5678']);
+
+    $this->actingAs($user)
+        ->get(route('vehicles.index', ['search' => 'ΑΒΓ']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('vehicles/index')
+            ->has('vehicles.data', 1)
+        );
+});
+
+test('vehicles index can combine multiple filters', function () {
+    $user = User::factory()->create();
+
+    $suv = VehicleCategory::factory()->create(['name' => 'SUV']);
+    $sedan = VehicleCategory::factory()->create(['name' => 'Sedan']);
+
+    Vehicle::factory()->create(['vehicle_category_id' => $suv->id, 'status' => 'available']);
+    Vehicle::factory()->create(['vehicle_category_id' => $suv->id, 'status' => 'rented']);
+    Vehicle::factory()->create(['vehicle_category_id' => $sedan->id, 'status' => 'available']);
+
+    $this->actingAs($user)
+        ->get(route('vehicles.index', ['category_id' => $suv->id, 'status' => 'available']))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('vehicles/index')
@@ -219,6 +307,120 @@ test('vehicle fuel type must be valid', function () {
             'current_km' => 0,
         ])
         ->assertSessionHasErrors('fuel_type');
+});
+
+// --- Update ---
+
+test('a vehicle can be updated', function () {
+    $user = User::factory()->create();
+    $vehicle = Vehicle::factory()->create(['plate_number' => 'ΑΒΓ-1234', 'ac' => true]);
+    $newCategory = VehicleCategory::factory()->create();
+    $newModel = VehicleModel::factory()->create();
+
+    $this->actingAs($user)
+        ->put(route('vehicles.update', $vehicle), [
+            'vehicle_category_id' => $newCategory->id,
+            'vehicle_model_id' => $newModel->id,
+            'plate_number' => 'ΔΕΖ-5678',
+            'cc' => 2000,
+            'seats' => 5,
+            'large_bags_capacity' => 3,
+            'small_bags_capacity' => 2,
+            'doors' => 4,
+            'ac' => false,
+            'gears' => 5,
+            'hp' => 150,
+            'base_price' => 55.00,
+            'vin' => 'WVWZZZ3CZWE999999',
+            'fuel_type' => 'diesel',
+            'transmission' => 'automatic',
+            'current_km' => 25000,
+        ])
+        ->assertRedirect(route('vehicles.index'));
+
+    $this->assertDatabaseHas('vehicles', [
+        'id' => $vehicle->id,
+        'plate_number' => 'ΔΕΖ-5678',
+        'ac' => false,
+        'vehicle_model_id' => $newModel->id,
+        'vehicle_category_id' => $newCategory->id,
+    ]);
+});
+
+test('updating a vehicle allows keeping the same plate number', function () {
+    $user = User::factory()->create();
+    $vehicle = Vehicle::factory()->create(['plate_number' => 'ΑΒΓ-1234']);
+
+    $this->actingAs($user)
+        ->put(route('vehicles.update', $vehicle), [
+            'vehicle_category_id' => $vehicle->vehicle_category_id,
+            'vehicle_model_id' => $vehicle->vehicle_model_id,
+            'plate_number' => 'ΑΒΓ-1234',
+            'cc' => $vehicle->cc,
+            'seats' => $vehicle->seats,
+            'large_bags_capacity' => $vehicle->large_bags_capacity,
+            'small_bags_capacity' => $vehicle->small_bags_capacity,
+            'doors' => $vehicle->doors,
+            'ac' => $vehicle->ac,
+            'gears' => $vehicle->gears,
+            'hp' => $vehicle->hp,
+            'base_price' => $vehicle->base_price,
+            'fuel_type' => $vehicle->fuel_type,
+            'transmission' => $vehicle->transmission,
+            'current_km' => $vehicle->current_km,
+        ])
+        ->assertRedirect(route('vehicles.index'));
+});
+
+test('updating a vehicle rejects a plate number used by another vehicle', function () {
+    $user = User::factory()->create();
+    Vehicle::factory()->create(['plate_number' => 'ΑΒΓ-1234']);
+    $vehicle = Vehicle::factory()->create(['plate_number' => 'ΔΕΖ-5678']);
+
+    $this->actingAs($user)
+        ->put(route('vehicles.update', $vehicle), [
+            'vehicle_category_id' => $vehicle->vehicle_category_id,
+            'vehicle_model_id' => $vehicle->vehicle_model_id,
+            'plate_number' => 'ΑΒΓ-1234',
+            'cc' => $vehicle->cc,
+            'seats' => $vehicle->seats,
+            'large_bags_capacity' => $vehicle->large_bags_capacity,
+            'small_bags_capacity' => $vehicle->small_bags_capacity,
+            'doors' => $vehicle->doors,
+            'ac' => $vehicle->ac,
+            'gears' => $vehicle->gears,
+            'hp' => $vehicle->hp,
+            'base_price' => $vehicle->base_price,
+            'fuel_type' => $vehicle->fuel_type,
+            'transmission' => $vehicle->transmission,
+            'current_km' => $vehicle->current_km,
+        ])
+        ->assertSessionHasErrors('plate_number');
+});
+
+test('updating a vehicle requires vehicle model id', function () {
+    $user = User::factory()->create();
+    $vehicle = Vehicle::factory()->create();
+
+    $this->actingAs($user)
+        ->put(route('vehicles.update', $vehicle), [
+            'vehicle_category_id' => $vehicle->vehicle_category_id,
+            'vehicle_model_id' => '',
+            'plate_number' => $vehicle->plate_number,
+            'cc' => $vehicle->cc,
+            'seats' => $vehicle->seats,
+            'large_bags_capacity' => $vehicle->large_bags_capacity,
+            'small_bags_capacity' => $vehicle->small_bags_capacity,
+            'doors' => $vehicle->doors,
+            'ac' => $vehicle->ac,
+            'gears' => $vehicle->gears,
+            'hp' => $vehicle->hp,
+            'base_price' => $vehicle->base_price,
+            'fuel_type' => $vehicle->fuel_type,
+            'transmission' => $vehicle->transmission,
+            'current_km' => $vehicle->current_km,
+        ])
+        ->assertSessionHasErrors('vehicle_model_id');
 });
 
 // --- API: vehicle models by make ---

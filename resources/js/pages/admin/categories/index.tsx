@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm, router } from '@inertiajs/react';
+import { useForm, router, Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -143,6 +143,7 @@ export default function CategoriesPage({ categories }: { categories: VehicleCate
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Κατηγορίες οχημάτων" />
             <div className="px-6 py-6 space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading title="Κατηγορίες" description="Διαχείριση κατηγοριών οχημάτων." />

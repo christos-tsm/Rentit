@@ -21,10 +21,19 @@ class VehicleRepository
             $query->whereHas('vehicleModel', fn ($q) => $q->where('vehicle_make_id', $vehicleRequestDTO->makeId));
         }
 
+        if ($vehicleRequestDTO->categoryId) {
+            $query->where('vehicle_category_id', $vehicleRequestDTO->categoryId);
+        }
+
+        if ($vehicleRequestDTO->status) {
+            $query->where('status', $vehicleRequestDTO->status);
+        }
+
         if ($vehicleRequestDTO->searchKey) {
             $search = $vehicleRequestDTO->searchKey;
             $query->where(function ($q) use ($search) {
                 $q->where('plate_number', 'like', '%'.$search.'%')
+                    ->orWhere('vin', 'like', '%'.$search.'%')
                     ->orWhereHas('vehicleModel', fn ($sub) => $sub->where('name', 'like', '%'.$search.'%'))
                     ->orWhereHas('vehicleModel.make', fn ($sub) => $sub->where('name', 'like', '%'.$search.'%'));
             });
@@ -39,5 +48,21 @@ class VehicleRepository
     public function create(array $data): Vehicle
     {
         return Vehicle::create($data);
+    }
+
+    public function getVehicle(VehicleRequestDTO $vehicleRequestDTO): ?Vehicle
+    {
+        return Vehicle::query()
+            ->with(['vehicleModel.make', 'category'])
+            ->findOrFail($vehicleRequestDTO->id);
+    }
+
+    public function update(Vehicle $vehicle, array $data): Vehicle
+    {
+        $vehicle = Vehicle::findOrFail($vehicle->id);
+        $vehicle->fill($data);
+        $vehicle->save();
+
+        return $vehicle->refresh();
     }
 }

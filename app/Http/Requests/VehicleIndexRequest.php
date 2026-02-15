@@ -20,6 +20,8 @@ class VehicleIndexRequest extends FormRequest
         return [
             'search' => ['nullable', 'string', 'max:255'],
             'make_id' => ['nullable', 'integer', 'exists:vehicle_makes,id'],
+            'category_id' => ['nullable', 'integer', 'exists:vehicle_categories,id'],
+            'status' => ['nullable', 'string', 'in:available,rented,maintenance,out_of_service'],
             'rpp' => ['nullable', 'integer', 'min:1', 'max:100'],
             'id' => ['nullable', 'integer', 'exists:vehicles,id'],
         ];
@@ -30,6 +32,8 @@ class VehicleIndexRequest extends FormRequest
         return new VehicleRequestDTO(
             searchKey: $this->validated('search'),
             makeId: $this->validated('make_id'),
+            categoryId: $this->validated('category_id'),
+            status: $this->validated('status'),
             rpp: $this->validated('rpp') ?? 15,
             id: $this->validated('id'),
         );

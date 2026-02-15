@@ -26,6 +26,7 @@ class VehicleModelController extends Controller
         return Inertia::render('admin/models/index', [
             'models' => $this->vehicleModelService->getAll($makeId),
             'makes' => $this->vehicleMakeService->getAll(),
+            // 'makes' => Inertia::lazy(fn() => $this->vehicleMakeService->getAll()),
             'selectedMakeId' => $makeId,
         ]);
     }
@@ -37,7 +38,7 @@ class VehicleModelController extends Controller
             $request->validated('name'),
         );
 
-        return back();
+        return back()->with('success', 'Το μοντέλο δημιουργήθηκε με επιτυχία.');
     }
 
     public function update(VehicleModelUpdateRequest $request, VehicleModel $vehicleModel): RedirectResponse
@@ -48,13 +49,13 @@ class VehicleModelController extends Controller
             $request->validated('name'),
         );
 
-        return back();
+        return back()->with('success', 'Το μοντέλο ενημερώθηκε με επιτυχία.');
     }
 
     public function destroy(VehicleModel $vehicleModel): RedirectResponse
     {
         $this->vehicleModelService->delete($vehicleModel);
 
-        return back();
+        return back()->with('success', 'Το μοντέλο διαγράφηκε με επιτυχία.');
     }
 }

@@ -27,20 +27,20 @@ class VehicleMakeController extends Controller
     {
         $this->vehicleMakeService->create($request->validated('name'));
 
-        return back();
+        return back()->with('success', 'Η μάρκα δημιουργήθηκε με επιτυχία.');
     }
 
     public function update(VehicleMakeUpdateRequest $request, VehicleMake $make): RedirectResponse
     {
         $this->vehicleMakeService->update($make, $request->validated('name'));
 
-        return back();
+        return back()->with('success', 'Η μάρκα ενημερώθηκε με επιτυχία.');
     }
 
     public function destroy(VehicleMake $make): RedirectResponse
     {
         $this->vehicleMakeService->delete($make);
 
-        return back();
+        return back()->with('success', 'Η μάρκα διαγράφηκε με επιτυχία.');
     }
 }

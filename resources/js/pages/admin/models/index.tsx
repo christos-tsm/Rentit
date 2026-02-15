@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useForm, router } from '@inertiajs/react';
+
+import { Trash2 } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
     Select,
@@ -10,168 +10,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
 import Heading from '@/components/heading';
-import InputError from '@/components/input-error';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as modelsIndex } from '@/routes/admin/models';
-import { store, update, destroy } from '@/actions/App/Http/Controllers/VehicleModelController';
+import { destroy } from '@/actions/App/Http/Controllers/VehicleModelController';
 import type { BreadcrumbItem } from '@/types';
 import type { VehicleMake, VehicleModel } from '@/types/admin';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { CreateModelDialog } from "@/components/models/create-model-dialog";
+import { EditModelDialog } from "@/components/models/edit-model-dialog";
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Μοντέλα', href: modelsIndex().url },
 ];
-
-function CreateModelDialog({ makes }: { makes: VehicleMake[] }) {
-    const [open, setOpen] = useState(false);
-    const form = useForm({ vehicle_make_id: '', name: '' });
-
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        form.submit(store(), {
-            onSuccess: () => {
-                setOpen(false);
-                form.reset();
-            },
-        });
-    }
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button size="sm">
-                    <Plus className="size-4 mr-1" />
-                    Νέο μοντέλο
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Νέο μοντέλο</DialogTitle>
-                        <DialogDescription>Προσθέστε ένα νέο μοντέλο οχήματος.</DialogDescription>
-                    </DialogHeader>
-                    <div className="my-4 space-y-4">
-                        <div className="space-y-2">
-                            <Label>Μάρκα</Label>
-                            <Select
-                                value={form.data.vehicle_make_id}
-                                onValueChange={(value) => form.setData('vehicle_make_id', value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Επιλέξτε μάρκα" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {makes.map((make) => (
-                                        <SelectItem key={make.id} value={String(make.id)}>
-                                            {make.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={form.errors.vehicle_make_id} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="create-model-name">Όνομα</Label>
-                            <Input
-                                id="create-model-name"
-                                value={form.data.name}
-                                onChange={(e) => form.setData('name', e.target.value)}
-                                placeholder="π.χ. Golf 1.6"
-                            />
-                            <InputError message={form.errors.name} />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit" disabled={form.processing}>
-                            Αποθήκευση
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-function EditModelDialog({ model, makes }: { model: VehicleModel; makes: VehicleMake[] }) {
-    const [open, setOpen] = useState(false);
-    const form = useForm({
-        vehicle_make_id: String(model.vehicle_make_id),
-        name: model.name,
-    });
-
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        form.submit(update(model.id), {
-            onSuccess: () => setOpen(false),
-        });
-    }
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="ghost" size="icon">
-                    <Pencil className="size-4" />
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Επεξεργασία μοντέλου</DialogTitle>
-                        <DialogDescription>Αλλάξτε τα στοιχεία του μοντέλου.</DialogDescription>
-                    </DialogHeader>
-                    <div className="my-4 space-y-4">
-                        <div className="space-y-2">
-                            <Label>Μάρκα</Label>
-                            <Select
-                                value={form.data.vehicle_make_id}
-                                onValueChange={(value) => form.setData('vehicle_make_id', value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Επιλέξτε μάρκα" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {makes.map((make) => (
-                                        <SelectItem key={make.id} value={String(make.id)}>
-                                            {make.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={form.errors.vehicle_make_id} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor={`edit-model-name-${model.id}`}>Όνομα</Label>
-                            <Input
-                                id={`edit-model-name-${model.id}`}
-                                value={form.data.name}
-                                onChange={(e) => form.setData('name', e.target.value)}
-                                placeholder="π.χ. Golf 1.6"
-                            />
-                            <InputError message={form.errors.name} />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit" disabled={form.processing}>
-                            Ενημέρωση
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
-}
 
 type Props = {
     models: VehicleModel[];
@@ -192,6 +44,7 @@ export default function ModelsPage({ models, makes, selectedMakeId }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Μοντέλα οχημάτων" />
             <div className="px-6 py-6 space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading title="Μοντέλα" description="Διαχείριση μοντέλων οχημάτων." />
@@ -210,7 +63,7 @@ export default function ModelsPage({ models, makes, selectedMakeId }: Props) {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Όλες οι μάρκες</SelectItem>
-                                {makes.map((make) => (
+                                {makes?.map((make) => (
                                     <SelectItem key={make.id} value={String(make.id)}>
                                         {make.name}
                                     </SelectItem>

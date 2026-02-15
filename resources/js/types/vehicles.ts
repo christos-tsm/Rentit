@@ -2,7 +2,7 @@ import { PaginatedResponse } from '.';
 import type { VehicleCategory, VehicleMake, VehicleModel } from './admin';
 
 type FUEL_TYPE = 'petrol' | 'diesel' | 'electric' | 'hybrid';
-type STATUS = 'available' | 'rented' | 'maintenance' | 'out_of_service';
+export type STATUS = 'available' | 'rented' | 'maintenance' | 'out_of_service';
 type TRANSMISSION = 'manual' | 'automatic';
 
 export type Vehicle = {
@@ -31,8 +31,16 @@ export type Vehicle = {
 
 export type VehiclePageData = PaginatedResponse<Vehicle>;
 
+export type VehicleIndexFilters = {
+    search: string | null;
+    make_id: number | null;
+    category_id: number | null;
+    status: STATUS | null;
+};
+
 export type VehicleIndexProps = {
     vehicles: VehiclePageData;
     makes: VehicleMake[];
-    selectedMakeId: number | null;
+    categories: VehicleCategory[];
+    filters: VehicleIndexFilters;
 };
