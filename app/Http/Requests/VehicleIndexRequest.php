@@ -5,18 +5,15 @@ namespace App\Http\Requests;
 use App\DTO\Requests\VehicleRequestDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VehicleIndexRequest extends FormRequest
-{
-    public function authorize(): bool
-    {
+class VehicleIndexRequest extends FormRequest {
+    public function authorize(): bool {
         return true;
     }
 
     /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             'search' => ['nullable', 'string', 'max:255'],
             'make_id' => ['nullable', 'integer', 'exists:vehicle_makes,id'],
@@ -27,8 +24,7 @@ class VehicleIndexRequest extends FormRequest
         ];
     }
 
-    public function toDTO(): VehicleRequestDTO
-    {
+    public function toDTO(): VehicleRequestDTO {
         return new VehicleRequestDTO(
             searchKey: $this->validated('search'),
             makeId: $this->validated('make_id'),

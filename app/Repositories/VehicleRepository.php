@@ -6,10 +6,8 @@ use App\DTO\Requests\VehicleRequestDTO;
 use App\Models\Vehicle;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class VehicleRepository
-{
-    public function getVehicles(VehicleRequestDTO $vehicleRequestDTO): LengthAwarePaginator
-    {
+class VehicleRepository {
+    public function getVehicles(VehicleRequestDTO $vehicleRequestDTO): LengthAwarePaginator {
         $query = Vehicle::query()
             ->with(['vehicleModel.make', 'category']);
 
@@ -18,7 +16,7 @@ class VehicleRepository
         }
 
         if ($vehicleRequestDTO->makeId) {
-            $query->whereHas('vehicleModel', fn ($q) => $q->where('vehicle_make_id', $vehicleRequestDTO->makeId));
+            $query->whereHas('vehicleModel', fn($q) => $q->where('vehicle_make_id', $vehicleRequestDTO->makeId));
         }
 
         if ($vehicleRequestDTO->categoryId) {
@@ -32,10 +30,10 @@ class VehicleRepository
         if ($vehicleRequestDTO->searchKey) {
             $search = $vehicleRequestDTO->searchKey;
             $query->where(function ($q) use ($search) {
-                $q->where('plate_number', 'like', '%'.$search.'%')
-                    ->orWhere('vin', 'like', '%'.$search.'%')
-                    ->orWhereHas('vehicleModel', fn ($sub) => $sub->where('name', 'like', '%'.$search.'%'))
-                    ->orWhereHas('vehicleModel.make', fn ($sub) => $sub->where('name', 'like', '%'.$search.'%'));
+                $q->where('plate_number', 'like', '%' . $search . '%')
+                    ->orWhere('vin', 'like', '%' . $search . '%')
+                    ->orWhereHas('vehicleModel', fn($sub) => $sub->where('name', 'like', '%' . $search . '%'))
+                    ->orWhereHas('vehicleModel.make', fn($sub) => $sub->where('name', 'like', '%' . $search . '%'));
             });
         }
 
@@ -45,20 +43,17 @@ class VehicleRepository
     /**
      * @param  array<string, mixed>  $data
      */
-    public function create(array $data): Vehicle
-    {
+    public function create(array $data): Vehicle {
         return Vehicle::create($data);
     }
 
-    public function getVehicle(VehicleRequestDTO $vehicleRequestDTO): ?Vehicle
-    {
+    public function getVehicle(VehicleRequestDTO $vehicleRequestDTO): ?Vehicle {
         return Vehicle::query()
             ->with(['vehicleModel.make', 'category'])
             ->findOrFail($vehicleRequestDTO->id);
     }
 
-    public function update(Vehicle $vehicle, array $data): Vehicle
-    {
+    public function update(Vehicle $vehicle, array $data): Vehicle {
         $vehicle = Vehicle::findOrFail($vehicle->id);
         $vehicle->fill($data);
         $vehicle->save();
