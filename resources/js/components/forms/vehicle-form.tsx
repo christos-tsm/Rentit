@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { VehicleCategory, VehicleMake, VehicleModel } from "@/types/admin";
 import { store } from '@/actions/App/Http/Controllers/VehicleController';
 import { Vehicle, STATUS } from "@/types/vehicles";
@@ -43,10 +43,19 @@ const VehicleForm = ({ vehicle, makes, categories, isEdit = false }: { vehicle: 
         current_km: vehicle?.current_km || '0',
     });
 
-    useEffect(() => {
-        if (!selectedMakeId) {
+    const formRef = useRef(form);
+    formRef.current = form;
+
+    function handleMakeChange(makeId: string) {
+        setSelectedMakeId(makeId);
+        if (!makeId) {
             setAvailableModels([]);
             form.setData('vehicle_model_id', '');
+        }
+    }
+
+    useEffect(() => {
+        if (!selectedMakeId) {
             return;
         }
 
@@ -57,10 +66,10 @@ const VehicleForm = ({ vehicle, makes, categories, isEdit = false }: { vehicle: 
             .then((res) => res.json())
             .then((data: VehicleModel[]) => {
                 setAvailableModels(data);
-                const currentModelId = String(form.data.vehicle_model_id);
+                const currentModelId = String(formRef.current.data.vehicle_model_id);
                 const modelExists = data.some((m) => String(m.id) === currentModelId);
                 if (!modelExists) {
-                    form.setData('vehicle_model_id', '');
+                    formRef.current.setData('vehicle_model_id', '');
                 }
             })
             .catch((err) => {
@@ -79,7 +88,7 @@ const VehicleForm = ({ vehicle, makes, categories, isEdit = false }: { vehicle: 
             form.submit(store(), {
                 onSuccess: () => {
                     form.reset();
-                    setSelectedMakeId("");
+                    handleMakeChange("");
                 }
             });
         }
@@ -93,7 +102,7 @@ const VehicleForm = ({ vehicle, makes, categories, isEdit = false }: { vehicle: 
                     <Label>Μάρκα</Label>
                     <Select
                         value={selectedMakeId}
-                        onValueChange={setSelectedMakeId}
+                        onValueChange={handleMakeChange}
                         defaultValue={String(vehicle?.vehicle_model?.vehicle_make_id)}
                     >
                         <SelectTrigger>
