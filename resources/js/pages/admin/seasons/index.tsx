@@ -1,8 +1,8 @@
 import { useForm, router, Head } from '@inertiajs/react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { store, update, destroy } from '@/actions/App/Http/Controllers/SeasonController';
 import { store as storePrice, update as updatePrice } from '@/actions/App/Http/Controllers/CategorySeasonPriceController';
+import { store, update, destroy } from '@/actions/App/Http/Controllers/SeasonController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import TablePagination from '@/components/table-pagination';

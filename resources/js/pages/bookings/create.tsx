@@ -21,7 +21,7 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as bookingsIndex } from '@/routes/bookings';
 import type { BreadcrumbItem, PaginatedResponse } from '@/types';
-import type { Extra, Location, PricingBreakdown, VehicleCategory } from '@/types/admin';
+import type { Extra, PricingBreakdown, VehicleCategory } from '@/types/admin';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },

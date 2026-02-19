@@ -1,6 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Eye, Trash2 } from "lucide-react";
 import { useRef, useCallback } from 'react';
+import TablePagination from '@/components/table-pagination';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +13,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { VEHICLE_STATUSES } from "@/lib/vehicle-constants";
 import { dashboard } from '@/routes';

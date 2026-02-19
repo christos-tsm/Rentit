@@ -31,9 +31,9 @@ function statusBadge(status: Booking['status']) {
     return <Badge variant={opt?.variant ?? 'default'}>{opt?.label ?? status}</Badge>;
 }
 
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
+// function formatDate(dateStr: string) {
+//     return new Date(dateStr).toLocaleDateString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+// }
 
 function formatDateTime(dateStr: string) {
     return new Date(dateStr).toLocaleDateString('el-GR', {

@@ -1,11 +1,8 @@
 import { Link } from '@inertiajs/react';
 import {
-    BookOpen,
     CalendarDays,
     Car,
     Clock,
-    DollarSign,
-    Folder,
     HelpCircle,
     Layers,
     LayoutGrid,

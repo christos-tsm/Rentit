@@ -5,6 +5,7 @@ import { destroy } from '@/actions/App/Http/Controllers/VehicleModelController';
 import Heading from '@/components/heading';
 import { CreateModelDialog } from "@/components/models/create-model-dialog";
 import { EditModelDialog } from "@/components/models/edit-model-dialog";
+import TablePagination from '@/components/table-pagination';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -14,7 +15,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as modelsIndex } from '@/routes/admin/models';

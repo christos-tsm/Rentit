@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { store, update, destroy } from '@/actions/App/Http/Controllers/VehicleMakeController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import TablePagination from '@/components/table-pagination';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -16,7 +17,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import TablePagination from '@/components/table-pagination';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as makesIndex } from '@/routes/admin/makes';

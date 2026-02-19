@@ -12,14 +12,13 @@ import {
     Sun,
     Tag,
     TrendingUp,
-    Type,
     UserCheck,
     Users,
 } from 'lucide-react';
 import { useState } from 'react';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { guide } from '@/routes';
