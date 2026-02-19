@@ -1,5 +1,25 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Car, Folder, Layers, LayoutGrid, Tag, Type } from 'lucide-react';
+import {
+    BookOpen,
+    CalendarDays,
+    Car,
+    Clock,
+    DollarSign,
+    Folder,
+    HelpCircle,
+    Layers,
+    LayoutGrid,
+    MapPin,
+    Package,
+    Percent,
+    Receipt,
+    Sun,
+    Tag,
+    TrendingUp,
+    Type,
+    UserCheck,
+    Users,
+} from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -12,10 +32,20 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, guide } from '@/routes';
 import { index as categoriesIndex } from '@/routes/admin/categories';
+import { index as customersIndex } from '@/routes/admin/customers';
+import { index as extrasIndex } from '@/routes/admin/extras';
+import { index as locationsIndex } from '@/routes/admin/locations';
 import { index as makesIndex } from '@/routes/admin/makes';
 import { index as modelsIndex } from '@/routes/admin/models';
+import { index as ageSurchargesIndex } from '@/routes/admin/pricing/age-surcharges';
+import { index as durationDiscountsIndex } from '@/routes/admin/pricing/duration-discounts';
+import { index as feesIndex } from '@/routes/admin/pricing/fees';
+import { index as timeAdjustmentsIndex } from '@/routes/admin/pricing/time-adjustments';
+import { index as yieldRulesIndex } from '@/routes/admin/pricing/yield-rules';
+import { index as seasonsIndex } from '@/routes/admin/seasons';
+import { index as bookingsIndex } from '@/routes/bookings';
 import { index as vehiclesIndex } from '@/routes/vehicles';
 import type { NavItem } from '@/types';
 import AppLogo from './app-logo';
@@ -30,6 +60,16 @@ const mainNavItems: NavItem[] = [
         title: 'Οχήματα',
         href: vehiclesIndex(),
         icon: Car,
+    },
+    {
+        title: 'Κρατήσεις',
+        href: bookingsIndex(),
+        icon: CalendarDays,
+    },
+    {
+        title: 'Πελάτες',
+        href: customersIndex(),
+        icon: Users,
     },
 ];
 
@@ -49,18 +89,56 @@ const adminNavItems: NavItem[] = [
         href: modelsIndex(),
         icon: Type,
     },
+    {
+        title: 'Τοποθεσίες',
+        href: locationsIndex(),
+        icon: MapPin,
+    },
+    {
+        title: 'Extras',
+        href: extrasIndex(),
+        icon: Package,
+    },
+    {
+        title: 'Σεζόν & Τιμές',
+        href: seasonsIndex(),
+        icon: Sun,
+    },
+];
+
+const pricingNavItems: NavItem[] = [
+    {
+        title: 'Εκπτώσεις Διάρκειας',
+        href: durationDiscountsIndex(),
+        icon: Percent,
+    },
+    {
+        title: 'Early Bird / Last Minute',
+        href: timeAdjustmentsIndex(),
+        icon: Clock,
+    },
+    {
+        title: 'Χρεώσεις Ηλικίας',
+        href: ageSurchargesIndex(),
+        icon: UserCheck,
+    },
+    {
+        title: 'Τέλη',
+        href: feesIndex(),
+        icon: Receipt,
+    },
+    {
+        title: 'Yield Rules',
+        href: yieldRulesIndex(),
+        icon: TrendingUp,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Οδηγός Χρήσης',
+        href: guide(),
+        icon: HelpCircle,
     },
 ];
 
@@ -82,6 +160,7 @@ export function AppSidebar() {
             <SidebarContent>
                 <NavMain items={mainNavItems} />
                 <NavMain items={adminNavItems} label="Διαχείριση" />
+                <NavMain items={pricingNavItems} label="Ρυθμίσεις Τιμολόγησης" />
             </SidebarContent>
 
             <SidebarFooter>

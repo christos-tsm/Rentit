@@ -21,4 +21,9 @@ class VehicleCategory extends Model
     {
         return $this->hasMany(Vehicle::class);
     }
+
+    public function seasonPrices(): HasMany
+    {
+        return $this->hasMany(CategorySeasonPrice::class);
+    }
 }
