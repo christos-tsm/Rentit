@@ -74,7 +74,7 @@ export default function BookingShowPage({ booking }: { booking: Booking }) {
             <div className="px-6 py-6 space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Heading title={`Κράτηση #${booking.id}`} />
+                        <h2 className="font-bold">{`Κράτηση #${booking.id}`}</h2>
                         {statusBadge(booking.status)}
                     </div>
                     <Button variant="outline" asChild>

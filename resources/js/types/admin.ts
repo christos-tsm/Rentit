@@ -130,7 +130,7 @@ export type Booking = {
     return_location_id: number;
     pickup_date: string;
     return_date: string;
-    total_price: number;
+    total_price: string;
     status: 'pending' | 'confirmed' | 'active' | 'completed' | 'cancelled';
     wp_order_id?: string;
     driver_age?: number;

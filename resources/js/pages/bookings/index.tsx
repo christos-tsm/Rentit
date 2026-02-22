@@ -144,7 +144,7 @@ export default function BookingsPage({
                                         <div>{formatDate(booking.return_date)}</div>
                                         <div className="text-xs text-muted-foreground">{booking.return_location?.name}</div>
                                     </td>
-                                    <td className="px-4 py-3 font-medium">{booking.total_price.toFixed(2)}&euro;</td>
+                                    <td className="px-4 py-3 font-medium">{parseFloat(booking.total_price).toFixed(2)}&euro;</td>
                                     <td className="px-4 py-3">{statusBadge(booking.status)}</td>
                                     <td className="px-4 py-3 text-right">
                                         <div className="flex items-center justify-end gap-1">
