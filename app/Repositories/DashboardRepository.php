@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Booking;
-use App\Models\Maintenance;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -31,15 +30,20 @@ class DashboardRepository
     }
 
     /**
-     * Sum of revenue for bookings with a given status in a specific month/year.
+     * Monthly revenue aggregated between two dates, keyed by "YYYY-MM".
+     *
+     * @return Collection<string, float>
      */
-    public function getMonthlyRevenue(int $month, int $year): float
+    public function getMonthlyRevenue(Carbon $start, Carbon $end): Collection
     {
-        return (float) Booking::query()
+        return Booking::query()
             ->whereIn('status', ['completed', 'active', 'confirmed'])
-            ->whereMonth('pickup_date', $month)
-            ->whereYear('pickup_date', $year)
-            ->sum('total_price');
+            ->where('pickup_date', '>=', $start)
+            ->where('pickup_date', '<=', $end)
+            ->selectRaw('SUBSTR(pickup_date, 1, 7) as month_key, SUM(total_price) as revenue')
+            ->groupBy('month_key')
+            ->orderBy('month_key')
+            ->pluck('revenue', 'month_key');
     }
 
     /**
@@ -54,7 +58,7 @@ class DashboardRepository
             ->toArray();
     }
 
-    public function getRecentBookings(int $limit = 8): Collection
+    public function getRecentBookings(int $limit = 10): Collection
     {
         return Booking::query()
             ->with([
@@ -69,22 +73,27 @@ class DashboardRepository
     }
 
     /**
-     * Active maintenance records (no end_date or end_date >= today).
+     * Vehicles currently in maintenance status, with their latest maintenance record if available.
      */
-    public function getActiveMaintenances(Carbon $now): Collection
+    public function getMaintenanceVehicles(int $limit = 5): Collection
     {
-        return Maintenance::query()
-            ->where(function ($q) use ($now) {
-                $q->whereNull('end_date')
-                    ->orWhere('end_date', '>=', $now->toDateString());
-            })
+        return Vehicle::query()
+            ->where('status', 'maintenance')
             ->with([
-                'vehicle:id,plate_number,vehicle_model_id,status',
-                'vehicle.vehicleModel:id,name,vehicle_make_id',
-                'vehicle.vehicleModel.make:id,name',
+                'vehicleModel:id,name,vehicle_make_id',
+                'vehicleModel.make:id,name',
+                'maintenances' => fn ($q) => $q->latest('start_date')->limit(1),
             ])
-            ->select('id', 'vehicle_id', 'description', 'start_date', 'end_date', 'cost')
-            ->orderBy('start_date', 'desc')
+            ->select('id', 'plate_number', 'vehicle_model_id', 'status')
+            ->latest('updated_at')
+            ->limit($limit)
             ->get();
+    }
+
+    public function getMaintenanceVehicleCount(): int
+    {
+        return Vehicle::query()
+            ->where('status', 'maintenance')
+            ->count();
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Booking;
-use App\Models\Maintenance;
 use App\Models\User;
 use App\Models\Vehicle;
 
@@ -74,7 +73,7 @@ test('dashboard returns calendar bookings within the visible window', function (
         );
 });
 
-test('dashboard returns revenue data for past and future months', function () {
+test('dashboard returns revenue data for all 12 months of the current year', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
@@ -82,7 +81,7 @@ test('dashboard returns revenue data for past and future months', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('dashboard')
-            ->has('revenueByMonth', 7)
+            ->has('revenueByMonth', 12)
         );
 });
 
@@ -118,26 +117,18 @@ test('dashboard returns recent bookings limited to 8', function () {
         );
 });
 
-test('dashboard returns active maintenance vehicles', function () {
+test('dashboard returns vehicles with maintenance status limited to 5', function () {
     $user = User::factory()->create();
 
-    Maintenance::factory()->ongoing()->create();
-
-    Maintenance::factory()->create([
-        'start_date' => now(),
-        'end_date' => now()->addDays(10),
-    ]);
-
-    Maintenance::factory()->create([
-        'start_date' => now()->subDays(30),
-        'end_date' => now()->subDays(10),
-    ]);
+    Vehicle::factory()->count(8)->create(['status' => 'maintenance']);
+    Vehicle::factory()->count(2)->create(['status' => 'available']);
 
     $this->actingAs($user)
         ->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('dashboard')
-            ->has('maintenanceVehicles', 2)
+            ->has('maintenanceVehicles.vehicles', 5)
+            ->where('maintenanceVehicles.total', 8)
         );
 });

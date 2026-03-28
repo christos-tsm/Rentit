@@ -23,16 +23,16 @@ export default function Dashboard({ calendarBookings, revenueByMonth, vehicleSta
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto p-4">
                 <div className="grid gap-4 lg:grid-cols-2">
                     {/* Left column */}
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         <BookingCalendar bookings={calendarBookings} />
                         <RecentBookingsTable bookings={recentBookings} />
                     </div>
 
                     {/* Right column */}
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         <RevenueChart data={revenueByMonth} />
                         <VehicleStatusChart counts={vehicleStatusCounts} />
-                        <MaintenanceList vehicles={maintenanceVehicles} />
+                        <MaintenanceList data={maintenanceVehicles} />
                     </div>
                 </div>
             </div>

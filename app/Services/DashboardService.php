@@ -24,29 +24,28 @@ class DashboardService
     }
 
     /**
-     * Revenue for 3 months back + current + 3 months ahead.
+     * Monthly revenue for the full current year (Jan–Dec).
      *
      * @return array<int, array{month: string, revenue: float}>
      */
-    public function getRevenueByMonth(int $pastMonths = 3, int $futureMonths = 3): array
+    public function getRevenueByMonth(): array
     {
         $now = Carbon::now();
+        $start = $now->copy()->startOfYear();
+        $end = $now->copy()->endOfYear();
+
+        $revenueMap = $this->dashboardRepository->getMonthlyRevenue($start, $end);
+
         $data = [];
+        $cursor = $start->copy();
 
-        for ($i = $pastMonths; $i >= 0; $i--) {
-            $date = $now->copy()->subMonths($i);
+        while ($cursor->lte($end)) {
+            $key = $cursor->format('Y-m');
             $data[] = [
-                'month' => $date->translatedFormat('M Y'),
-                'revenue' => round($this->dashboardRepository->getMonthlyRevenue($date->month, $date->year), 2),
+                'month' => $cursor->translatedFormat('M'),
+                'revenue' => round((float) ($revenueMap[$key] ?? 0), 2),
             ];
-        }
-
-        for ($i = 1; $i <= $futureMonths; $i++) {
-            $date = $now->copy()->addMonths($i);
-            $data[] = [
-                'month' => $date->translatedFormat('M Y'),
-                'revenue' => round($this->dashboardRepository->getMonthlyRevenue($date->month, $date->year), 2),
-            ];
+            $cursor->addMonth();
         }
 
         return $data;
@@ -69,10 +68,13 @@ class DashboardService
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array{vehicles: array<int, array<string, mixed>>, total: int}
      */
-    public function getMaintenanceVehicles(): array
+    public function getMaintenanceVehicles(int $limit = 5): array
     {
-        return $this->dashboardRepository->getActiveMaintenances(Carbon::now())->toArray();
+        return [
+            'vehicles' => $this->dashboardRepository->getMaintenanceVehicles($limit)->toArray(),
+            'total' => $this->dashboardRepository->getMaintenanceVehicleCount(),
+        ];
     }
 }

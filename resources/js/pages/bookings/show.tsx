@@ -69,7 +69,7 @@ export default function BookingShowPage({ booking }: { booking: Booking }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Κράτηση #${booking.id}`} />
+            <Head title={`Κράτηση: ${booking.customer?.first_name} ${booking.customer?.last_name} - ${booking.customer?.email}`} />
             <div className="px-6 py-6 space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">

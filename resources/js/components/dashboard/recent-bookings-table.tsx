@@ -27,7 +27,7 @@ function vehicleLabel(vehicle?: Booking['vehicle']): string {
 
 export default function RecentBookingsTable({ bookings }: { bookings: Booking[] }) {
     return (
-        <Card>
+        <Card className="flex-1">
             <CardHeader className="pb-3">
                 <CardTitle className="text-base">Πρόσφατες Κρατήσεις</CardTitle>
             </CardHeader>

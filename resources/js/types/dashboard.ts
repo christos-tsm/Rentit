@@ -17,19 +17,25 @@ export type RevenueMonth = {
 
 export type VehicleStatusCounts = Partial<Record<STATUS, number>>;
 
-export type MaintenanceVehicle = {
+export type MaintenanceRecord = {
     id: number;
-    vehicle_id: number;
     description: string;
     start_date: string;
     end_date: string | null;
     cost: string;
-    vehicle?: {
-        id: number;
-        plate_number: string;
-        status: STATUS;
-        vehicle_model?: { id: number; name: string; make?: { id: number; name: string } | null } | null;
-    } | null;
+};
+
+export type MaintenanceVehicle = {
+    id: number;
+    plate_number: string;
+    status: STATUS;
+    vehicle_model?: { id: number; name: string; make?: { id: number; name: string } | null } | null;
+    maintenances?: MaintenanceRecord[];
+};
+
+export type MaintenanceData = {
+    vehicles: MaintenanceVehicle[];
+    total: number;
 };
 
 export type DashboardProps = {
@@ -37,5 +43,5 @@ export type DashboardProps = {
     revenueByMonth: RevenueMonth[];
     vehicleStatusCounts: VehicleStatusCounts;
     recentBookings: Booking[];
-    maintenanceVehicles: MaintenanceVehicle[];
+    maintenanceVehicles: MaintenanceData;
 };
