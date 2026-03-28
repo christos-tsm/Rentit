@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookingTimeAdjustmentController;
 use App\Http\Controllers\CategorySeasonPriceController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriverAgeSurchargeController;
 use App\Http\Controllers\DurationDiscountController;
 use App\Http\Controllers\ExtraController;
@@ -15,7 +16,8 @@ use App\Http\Controllers\VehicleModelController;
 use App\Http\Controllers\YieldRuleController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('management')->group(function () {
+
     Route::get('/makes', [VehicleMakeController::class, 'index'])->name('admin.makes.index');
     Route::post('/makes', [VehicleMakeController::class, 'store'])->name('admin.makes.store');
     Route::put('/makes/{make}', [VehicleMakeController::class, 'update'])->name('admin.makes.update');
