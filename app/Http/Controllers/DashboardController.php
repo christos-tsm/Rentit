@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\DashboardService;
 use Inertia\Inertia;
+use Inertia\Response;
 
-class DashboardController extends Controller {
+class DashboardController extends Controller
+{
+    public function __construct(
+        protected DashboardService $dashboardService,
+    ) {}
 
-
-    public function index() {
-        return Inertia::render('dashboard');
+    public function index(): Response
+    {
+        return Inertia::render('dashboard', [
+            'calendarBookings' => $this->dashboardService->getCalendarBookings(),
+            'revenueByMonth' => $this->dashboardService->getRevenueByMonth(),
+            'vehicleStatusCounts' => $this->dashboardService->getVehicleStatusCounts(),
+            'recentBookings' => $this->dashboardService->getRecentBookings(),
+            'maintenanceVehicles' => $this->dashboardService->getMaintenanceVehicles(),
+        ]);
     }
 }
