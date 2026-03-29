@@ -9,7 +9,7 @@
 
 @theme {
     --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Manrope', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
@@ -19,6 +19,7 @@
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+    --color-landing-background: var(--landing-background);
 
     --color-card: var(--card);
     --color-card-foreground: var(--card-foreground);
@@ -59,9 +60,12 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --perspective-remote: 1800px;
 }
 
 :root {
+    --landing-background: oklch(0.97 0 0);
     --background: oklch(1 0 0);
     --foreground: #1A212C;
     --card: oklch(1 0 0);
@@ -132,6 +136,20 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@utility animate-marquee {
+    animation: marquee linear infinite;
+}
+
 @layer base {
     * {
         @apply border-border;
@@ -143,5 +161,9 @@
 
     button:not([disabled]) {
         @apply cursor-pointer;
+    }
+
+    * {
+        outline: none;
     }
 }
